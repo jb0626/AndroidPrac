@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -14,7 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import per.prac.androidprac.ui.composes.Test
+import per.prac.androidprac.ui.composes.CheckBox
+import per.prac.androidprac.ui.composes.RadioButton
 import per.prac.androidprac.ui.theme.AndroidPracTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,11 +33,11 @@ class MainActivity : ComponentActivity() {
 //                    BackgroundButton("HI")
 //                    BackgroundButton("HI 2")
 //                    Buttons().ElevatedButton()
-//                    Column {
-//                        OutsideRadioButton()
-//                        OutsideCheckBox()
-//                    }
-                    Test()
+                    Column {
+                        RadioButton()
+                        CheckBox()
+                    }
+//                    Test()
                 }
             }
         }
