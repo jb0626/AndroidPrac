@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,28 +17,41 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import per.prac.androidprac.ui.composes.CheckBox
+import per.prac.androidprac.ui.composes.LzVertGrid
 import per.prac.androidprac.ui.composes.RadioButton
+import per.prac.androidprac.ui.composes.ScrollBoxes
 import per.prac.androidprac.ui.theme.AndroidPracTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var list = mutableListOf<String>()
+        for (i in 1..100) {
+            list.add("NO.$i")
+        }
+
         setContent {
             AndroidPracTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-//                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
 //                    Greeting("Android")
 //                    BackgroundButton("HI")
 //                    BackgroundButton("HI 2")
 //                    Buttons().ElevatedButton()
-                    Column {
-                        RadioButton()
-                        CheckBox()
-                    }
+
+//                    Column {
+//                        RadioButton()
+//                        CheckBox()
+//                    }
+
 //                    Test()
+
+//                    LzVertGrid(lists = list)
+                    ScrollBoxes(count = 100)
                 }
             }
         }
