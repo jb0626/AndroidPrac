@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,12 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import per.prac.androidprac.ui.composes.Btn3
 import per.prac.androidprac.ui.composes.CheckBox
-import per.prac.androidprac.ui.composes.LzVertGrid
-import per.prac.androidprac.ui.composes.RadioButton
-import per.prac.androidprac.ui.composes.ScrollBoxes
 import per.prac.androidprac.ui.theme.AndroidPracTheme
+import kotlin.random.Random
+import kotlin.reflect.KProperty
 
+@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,32 +28,45 @@ class MainActivity : ComponentActivity() {
         for (i in 1..100) {
             list.add("NO.$i")
         }
-
         setContent {
-            AndroidPracTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-//                    Greeting("Android")
-//                    BackgroundButton("HI")
-//                    BackgroundButton("HI 2")
-//                    Buttons().ElevatedButton()
-
-//                    Column {
-//                        RadioButton()
-//                        CheckBox()
-//                    }
-
-//                    Test()
-
-//                    LzVertGrid(lists = list)
-                    ScrollBoxes(count = 100)
-                }
-            }
+            CheckBox()
         }
+
+//        setContent {
+//            AndroidPracTheme {
+//                // A surface container using the 'background' color from the theme
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+////                    Greeting("Android")
+////                    BackgroundButton("HI")
+////                    BackgroundButton("HI 2")
+////                    Buttons().ElevatedButton()
+//
+////                    Column {
+////                        RadioButton()
+////                        CheckBox()
+////                    }
+//
+////                    Test()
+//
+////                    LzVertGrid(lists = list)
+//                    ScrollBoxes(count = 100)
+//                }
+//            }
+//        }
     }
+}
+
+fun ShowDialog(
+    title: String,
+    msg: String,
+    canCancel: Boolean = true,
+    posiBtnTxt: String = "확인",
+    negaBtnTxt: String = "",
+    neutBtnTxt: String = ""
+) {
 }
 
 @Composable
@@ -102,5 +113,29 @@ fun BackgroundButton(str: String) {
 fun GreetingPreview() {
     AndroidPracTheme {
         Greeting("Android")
+    }
+}
+
+class DelegatedPropTest {
+    var uid: String by ManageUid()
+}
+
+class ManageUid {
+    var userId: String = ""
+    operator fun getValue(
+        delegatedPropTest: DelegatedPropTest,
+        property: KProperty<*>
+    ): String {
+        userId ="UID${Random(10000).nextInt()}"
+        return userId
+    }
+
+    operator fun setValue(
+        delegatedPropTest: DelegatedPropTest,
+        property: KProperty<*>,
+        s: String
+    ) {
+        userId = s
+        println(userId)
     }
 }
