@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -135,7 +136,8 @@ fun boxLayout() {
     Box(modifier = Modifier.background(color = Color.Gray)) {
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_foreground),
-            contentDescription = "Android Image"
+            contentDescription = "Android Image",
+            modifier= Modifier.testTag("Android_Image")
         )
         Icon(
             Icons.Filled.Search,
@@ -146,8 +148,8 @@ fun boxLayout() {
 }
 
 @Composable
-fun createButton(str: String) {
-    Button(onClick = { /*TODO*/ }) {
+fun createButton(str: String, event: () -> Unit) {
+    Button(onClick = event) {
         Text(text = str)
     }
 }

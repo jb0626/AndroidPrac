@@ -4,18 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import createConstraintBox
+import createButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import per.prac.androidprac.ui.composes.Btn3
-import per.prac.androidprac.ui.composes.CheckBox
+import per.prac.androidprac.db.StudentDatabase
+import per.prac.androidprac.db.vo.Student
 import per.prac.androidprac.ui.theme.AndroidPracTheme
 import kotlin.random.Random
 import kotlin.reflect.KProperty
@@ -29,8 +30,34 @@ class MainActivity : ComponentActivity() {
         for (i in 1..100) {
             list.add("NO.$i")
         }
+
+        val db = StudentDatabase.getInstance(applicationContext)
+
         setContent {
-            createConstraintBox()
+            Column {
+                createButton("Save") {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        db.studentDao.insertStudent(
+                            Student(
+                                1, "Jay", 100
+                            )
+                        )
+                    }
+                }
+                createButton("Show") {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        db.studentDao.getAll().stream()
+                            .forEach {
+                                Log.d("TAG", "NO : ${it.no} NAME : ${it.name} SCORE : ${it.score}")
+                            }
+                    }
+                }
+                createButton("Clear") {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        db.studentDao.clear()
+                    }
+                }
+            }
         }
 
 //        setContent {
@@ -127,7 +154,7 @@ class ManageUid {
         delegatedPropTest: DelegatedPropTest,
         property: KProperty<*>
     ): String {
-        userId ="UID${Random(10000).nextInt()}"
+        userId = "UID${Random(10000).nextInt()}"
         return userId
     }
 
