@@ -15,14 +15,46 @@ import createButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
 import per.prac.androidprac.db.StudentDatabase
 import per.prac.androidprac.db.vo.Student
+import per.prac.androidprac.models.network.res.Repository
+import per.prac.androidprac.network.ANetworkListener
+import per.prac.androidprac.network.NetworkInterface
+import per.prac.androidprac.network.NetworkManager
 import per.prac.androidprac.ui.theme.AndroidPracTheme
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 import kotlin.reflect.KProperty
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
+
+//    val retrofit = Retrofit.Builder()
+//        .baseUrl("https://date.nager.at")
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build().apply {
+//            create(NetworkInterface::class.java)
+//        }
+
+//    val service = retrofit.create(NetworkInterface::class.java)
+
+    val client = OkHttpClient.Builder()
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .readTimeout(5, TimeUnit.SECONDS)
+        .writeTimeout(5, TimeUnit.SECONDS)
+        .build()
+
+    val service = Retrofit.Builder()
+        .client(client)
+        .baseUrl("https://date.nager.at")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build().let {
+            it.create(NetworkInterface::class.java)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,8 +65,30 @@ class MainActivity : ComponentActivity() {
 
         val db = StudentDatabase.getInstance(applicationContext)
 
+        val manager = NetworkManager()
+
         setContent {
             Column {
+                createButton("Load") {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        manager.getRepository(
+                            owner = "jb0626",
+                            repo = "AndroidPrac",
+                            callback = object : ANetworkListener<Repository>() {
+                                override fun onResponse(res: Repository) {
+                                    if (!res.isSuccess) {
+                                        return
+                                    }
+
+                                    Log.d(
+                                        "TAG",
+                                        "id : ${res.id} name : ${res.name} fullname: ${res.fullName} url : ${res.htmlUrl} private : ${res.private}"
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
                 createButton("Save") {
                     CoroutineScope(Dispatchers.IO).launch {
                         db.studentDao.insertStudent(
