@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,16 +18,25 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Observer
 import per.prac.androidprac.R
+import per.prac.androidprac.models.view.BtnViewModel
+import per.prac.androidprac.models.view.TestViewModel
 
 @Composable
 fun createConstraintBox() {
@@ -137,7 +147,7 @@ fun boxLayout() {
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_foreground),
             contentDescription = "Android Image",
-            modifier= Modifier.testTag("Android_Image")
+            modifier = Modifier.testTag("Android_Image")
         )
         Icon(
             Icons.Filled.Search,
@@ -152,4 +162,31 @@ fun createButton(str: String, event: () -> Unit) {
     Button(onClick = event) {
         Text(text = str)
     }
+}
+
+@Composable
+fun createButton(str: String, vm: BtnViewModel, event: () -> Unit) {
+    var enable by remember { mutableStateOf(true) }
+
+    vm.enableData.observe(LocalLifecycleOwner.current) {
+        enable = it
+    }
+
+    Button(
+        enabled = enable,
+        onClick = event
+    ) {
+        Text(text = str)
+    }
+}
+
+@Composable
+fun createText(vm: TestViewModel) {
+    var text by remember { mutableStateOf("") }
+
+    vm.viewData.observe(LocalLifecycleOwner.current) {
+        text = "현재수량 : $it"
+    }
+
+    Text(text = text)
 }

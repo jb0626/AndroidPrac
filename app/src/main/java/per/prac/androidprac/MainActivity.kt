@@ -2,6 +2,7 @@ package per.prac.androidprac
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import createButton
+import createText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +21,8 @@ import okhttp3.OkHttpClient
 import per.prac.androidprac.db.StudentDatabase
 import per.prac.androidprac.db.vo.Student
 import per.prac.androidprac.models.network.res.Repository
+import per.prac.androidprac.models.view.BtnViewModel
+import per.prac.androidprac.models.view.TestViewModel
 import per.prac.androidprac.network.ANetworkListener
 import per.prac.androidprac.network.NetworkInterface
 import per.prac.androidprac.network.NetworkManager
@@ -69,6 +73,25 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Column {
+                val testViewModel = TestViewModel(10)
+                val plusBtnViewModel = BtnViewModel()
+                val minusBtnViewModel = BtnViewModel()
+                createText(vm = testViewModel)
+                createButton(str = "Plus", vm = plusBtnViewModel) {
+                    if (testViewModel.plusAndJudge(1)) {
+                        Toast.makeText(this@MainActivity, "10개 이상 못 삼요", Toast.LENGTH_SHORT).show()
+                        plusBtnViewModel.enableData.value = false
+                    } else {
+                        minusBtnViewModel.enableData.value = true
+                    }
+                }
+                createButton(str = "Minus", vm = minusBtnViewModel) {
+                    if (testViewModel.minusAndJudge(1)) {
+                        minusBtnViewModel.enableData.value = false
+                    } else {
+                        plusBtnViewModel.enableData.value = true
+                    }
+                }
                 createButton("Load") {
                     CoroutineScope(Dispatchers.IO).launch {
                         manager.getRepository(
